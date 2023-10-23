@@ -1,17 +1,24 @@
 const Koa = require('koa')
 const app = new Koa()
 const Router = require('koa-router')
+const jwt = require('koa-jwt')
+
 
 const router = new Router()
-const db = require("./config");
 const query = require("./mysql");
+const adimnRouter = require("./admin");
+const mainRouter = require("./main");
+const strategyRouter = require("./strategy");
+
+
 
 router.post("/add", async (ctx, next) => {
-    const sqlStr = `insert into administrator values(?,?,?);`;
+    const sqlStr = `insert into administrator values(?,?);`;
     const ans=await query(sqlStr,[ctx.query.username,ctx.query.phonenum,ctx.query.passwords]);
     ctx.body='添加成功'
     next()
   });
+
 
   // // 删除
   router.delete("/:username", async (ctx, next) => {
@@ -42,7 +49,29 @@ router.post("/add", async (ctx, next) => {
     ctx.body=ans
   });
 
+  const errorHandle = (ctx, next) => {
+    return next().catch((err) => {
+      if (err.status === 401) {
+        ctx.status = 401;
+        ctx.body = {
+          error: err.originalError ? err.originalError.message : err.message,
+        };
+      } else {
+        throw err;
+      }
+    });
+  }
+app.use(errorHandle)
+// app.use(jwt({
+//   secret: 'Gopal_token'
+// }).unless({ // 配置白名单
+//   path: [/\/admin\/register/, /\/admin\/login/]
+// }))
 app.use(router.routes())
+app.use(mainRouter.routes())
+app.use(adimnRouter.routes())
+app.use(strategyRouter.routes())
+
 
 app.listen(3333, ()=>{
   console.log('server is running at http://localhost:3333')

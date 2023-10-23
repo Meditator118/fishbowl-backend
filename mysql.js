@@ -6,7 +6,7 @@ var pool = mysql.createPool({
     host: "127.0.0.1",
   user: "root",
   password: "hzj1108",
-  database: "acid",
+  database: "fishbowl",
 })
 const query=function (sql,values){
     return new Promise((res,rej)=>{
