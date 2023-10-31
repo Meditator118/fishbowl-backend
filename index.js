@@ -10,6 +10,8 @@ const adimnRouter = require("./admin");
 const mainRouter = require("./main");
 const strategyRouter = require("./strategy");
 
+const bodyParser=require('koa-bodyparser'); 
+app.use(bodyParser());
 
 
 router.post("/add", async (ctx, next) => {
