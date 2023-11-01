@@ -13,57 +13,30 @@ const strategyRouter = require("./strategy");
 const bodyParser=require('koa-bodyparser'); 
 app.use(bodyParser());
 
+const cors = require('koa2-cors')
 
-router.post("/add", async (ctx, next) => {
-    const sqlStr = `insert into administrator values(?,?);`;
-    const ans=await query(sqlStr,[ctx.query.username,ctx.query.phonenum,ctx.query.passwords]);
-    ctx.body='添加成功'
-    next()
+app.use(cors({
+  origin:"*", // 允许来自指定域名请求
+  maxAge: 500, // 本次预检请求的有效期，单位为秒。
+  methods:['GET','POST','OPTIONS'],  // 所允许的HTTP请求方法
+  alloweHeaders:['Content-Type'], // 服务器支持的所有头信息字段
+  credentials: true // 是否允许发送Cookie
+}))
+
+const errorHandle = (ctx, next) => {
+  return next().catch((err) => {
+    if (err.status === 401) {
+      ctx.status = 401;
+      ctx.body = {
+        error: err.originalError ? err.originalError.message : err.message,
+      };
+    } else {
+      console.log(err);
+    }
   });
-
-
-  // // 删除
-  router.delete("/:username", async (ctx, next) => {
-    const sqlStr = `delete from administrator  where username=?;`;
-    const ans=await query(sqlStr,ctx.params.username);
-    ctx.body='删除成功'
-  });
-
-  // // 修改
-  router.post("/:username", async (ctx, next) => {
-
-    const sqlStr = `update administrator set phonenum=? where username=?;`;
-    const ans=await query(sqlStr,[ctx.query.phonenum,ctx.params.username]);
-    ctx.body='修改成功'
-  });
-  
-
-  // 查询一条
-  router.get("/:username", async (ctx, next) => {
-    const sqlStr = `select * from administrator where username=?;`;
-    const ans=await query(sqlStr,ctx.params.username);
-    ctx.body=ans
-
-  });
-  router.get("/", async (ctx, next) => {
-    const sqlStr = `select * from administrator;`;
-    const ans=await query(sqlStr);
-    ctx.body=ans
-  });
-
-  const errorHandle = (ctx, next) => {
-    return next().catch((err) => {
-      if (err.status === 401) {
-        ctx.status = 401;
-        ctx.body = {
-          error: err.originalError ? err.originalError.message : err.message,
-        };
-      } else {
-        throw err;
-      }
-    });
-  }
+}
 app.use(errorHandle)
+
 // app.use(jwt({
 //   secret: 'Gopal_token'
 // }).unless({ // 配置白名单

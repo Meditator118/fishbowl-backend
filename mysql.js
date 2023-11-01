@@ -9,7 +9,7 @@ var pool = mysql.createPool({
   database: "fishbowl",
 })
 const query=function (sql,values){
-    return new Promise((res,rej)=>{
+    return new Promise((res,rej)=>{ 
         pool.getConnection(function(err,connection){
              if(err){
                  rej(err)
@@ -20,6 +20,7 @@ const query=function (sql,values){
                     }else{
                         res(rows)
                     }
+                    connection.release()
                 })
              }
         })

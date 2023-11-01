@@ -51,22 +51,23 @@ router.get("/strategy/:option", async (ctx, next) => {
     }
     next()
   });
-//   router.post("/strategy/:option", async (ctx, next) => {
-//     const sqlStr = `update ${ctx.params.option}_strategy set ?;`;
-//     const ans=await query(sqlStr,[ctx.query]);
-//     console.log(ans);
+  
+  router.post("/strategy/:option", async (ctx, next) => {
+    const sqlStr = `update ${ctx.params.option}_strategy set ?;`;
+    const ans=await query(sqlStr,[ctx.query]);
+    console.log(ans);
 
-//     if(ans){
-//         ctx.status = 200;
-//         ctx.body={
-//             message: 'success',
-//         }
-//     }else{
-//         ctx.status = 404;
-//         ctx.body={
-//             message: 'error',
-//         }
-//     }
-//     next()
-//   });
+    if(ans){
+        ctx.status = 200;
+        ctx.body={
+            message: 'success',
+        }
+    }else{
+        ctx.status = 404;
+        ctx.body={
+            message: 'error',
+        }
+    }
+    next()
+  });
 module.exports =router

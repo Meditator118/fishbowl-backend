@@ -6,8 +6,7 @@ router.get("/main/current", async (ctx, next) => {
     const ans=await query(sqlStr);
     if(ans.length){
         Object.keys(ans[0]).forEach(key => {
-            console.log(key);
-            if(key!=="current_temperature"&&key!=="target_temperature"){
+            if(key!=="current_temperature"&&key!=="target_temperature"&&key!=="id"){
                 if(ans[0][key] === 1){
                     ans[0][key]=true
                 }else if(ans[key] === 0){
@@ -27,8 +26,8 @@ router.get("/main/current", async (ctx, next) => {
             message: 'error',
         }
     }
-    next()
   });
+
   router.get("/main/history/temperature", async (ctx, next) => {
     const sqlStr = `select * from  temp_his;`;
     const ans=await query(sqlStr);
@@ -44,8 +43,8 @@ router.get("/main/current", async (ctx, next) => {
             message: 'error',
         }
     }
-    next()
   });
+
   router.get("/main/history/water", async (ctx, next) => {
     const sqlStr = `select * from  water_his;`;
     const ans=await query(sqlStr);
@@ -61,6 +60,5 @@ router.get("/main/current", async (ctx, next) => {
             message: 'error',
         }
     }
-    next()
   });
 module.exports =router
