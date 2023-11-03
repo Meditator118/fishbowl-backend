@@ -14,7 +14,6 @@ const jsonwebtoken = require('jsonwebtoken')
       try{
         const sqlStr = `insert into admin values(?,?);`;
         const ans=await query(sqlStr,[data.username,data.password]);
-        console.log(ans);
         ctx.status = 200;
         ctx.body = {
           message: '注册成功',
